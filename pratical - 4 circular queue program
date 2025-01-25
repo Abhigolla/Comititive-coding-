@@ -1,0 +1,78 @@
+#include <iostream>
+#define SIZE 5
+using namespace std;
+class CircularQueue {
+private:
+    int front, rear;
+    int items[SIZE];
+public:
+    CircularQueue() : front(-1), rear(-1) {}
+    bool isFull() {
+        return ((front == rear + 1) || (front == 0 && rear == SIZE - 1));
+    }
+    bool isEmpty() {
+        return (front == -1);
+    }
+    void enqueue(int element) {
+        if (isFull()) {
+            cout << "\nQueue is full!" << endl;
+        } else {
+            if (front == -1) front = 0;
+            rear = (rear + 1) % SIZE;
+            items[rear] = element;
+            cout << "\nInserted -> " << element << endl;
+        }
+    }
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "\nQueue is empty!" << endl;
+            return -1;
+        } else {
+            int element = items[front];
+            if (front == rear) {
+                front = -1;
+                rear = -1;
+            } else {
+                front = (front + 1) % SIZE;
+            }
+            cout << "\nDeleted -> " << element << endl;
+            return element;
+        }
+    }
+    void display() {
+        if (isEmpty()) {
+            cout << "\nQueue is empty!" << endl;
+        } else {
+            cout << "\nFront -> " << front;
+            cout << "\nItems -> ";
+            int i = front;
+            while (i != rear) {
+                cout << items[i] << " ";
+                i = (i + 1) % SIZE;
+            }
+            cout << items[i];
+            cout << "\nRear -> " << rear << endl;
+        }
+    }
+};
+int main() {
+    CircularQueue q;
+    q.dequeue(); 
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+    q.enqueue(4);
+    q.enqueue(5);
+    q.enqueue(6); 
+    q.display();
+    q.dequeue();
+    q.dequeue();
+    q.display();
+    q.enqueue(7);
+    q.enqueue(8);
+    q.enqueue(9); 
+    q.display();
+    return 0;
+}
+
+
