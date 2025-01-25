@@ -1,84 +1,99 @@
 //Write a program for implementing A MINSTACK Which should support operations like PUSH,POP,OVERFLOW,UNDERFLOW & DISPLAY.
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <vector>
+#include <climits>
+
 #define MAX 5
-struct MinStack {
-    int stack[MAX];        
-    int min_stack[MAX];  
-    int top;               
+
+class MinStack {
+private:
+    std::vector<int> stack;
+    std::vector<int> min_stack;
+
+public:
+    MinStack() {
+        stack.reserve(MAX);
+        min_stack.reserve(MAX);
+    }
+
+    bool isFull() {
+        return stack.size() == MAX;
+    }
+
+    bool isEmpty() {
+        return stack.empty();
+    }
+
+    void push(int value) {
+        if (isFull()) {
+            std::cout << "Overflow: stack is full, cannot push element\n";
+            return;
+        }
+        stack.push_back(value);
+        if (min_stack.empty() || value < min_stack.back()) {
+            min_stack.push_back(value);
+        } else {
+            min_stack.push_back(min_stack.back());
+        }
+    }
+
+    int pop() {
+        if (isEmpty()) {
+            std::cout << "Underflow: stack is empty, cannot pop element\n";
+            return INT_MIN;
+        }
+        int popped_value = stack.back();
+        stack.pop_back();
+        min_stack.pop_back();
+        return popped_value;
+    }
+
+    int top() {
+        if (isEmpty()) {
+            std::cout << "Underflow: stack is empty, no top element\n";
+            return INT_MIN;
+        }
+        return stack.back();
+    }
+
+    int getMin() {
+        if (isEmpty()) {
+            std::cout << "Underflow: stack is empty, no minimum element\n";
+            return INT_MIN;
+        }
+        return min_stack.back();
+    }
+
+    void display() {
+        if (isEmpty()) {
+            std::cout << "Stack is empty\n";
+            return;
+        }
+        std::cout << "Stack elements: ";
+        for (int elem : stack) {
+            std::cout << elem << " ";
+        }
+        std::cout << "\nMinimum element so far: " << getMin() << std::endl;
+    }
 };
-void initstack(struct MinStack* minstack) {
-    minstack->top = -1;
-}
-int isFull(struct MinStack* minstack) {
-    return minstack->top == MAX - 1;
-}
-int isEmpty(struct MinStack* minstack) {
-    return minstack->top == -1;
-}
-void push(struct MinStack* minstack, int value) {
-    if (isFull(minstack)) {
-        printf("Overflow: stack is full, cannot push element\n");
-        return;
-    }
-    minstack->stack[++(minstack->top)] = value;
-    if (minstack->top == 0) {
-        minstack->min_stack[minstack->top] = value;
-    } else {
-        int currentMin = minstack->min_stack[minstack->top - 1];
-        minstack->min_stack[minstack->top] = (value < currentMin) ? value : currentMin;
-    }
-}
-int pop(struct MinStack* minstack) {
-    if (isEmpty(minstack)) {
-        printf("Underflow: stack is empty, cannot pop element\n");
-        return -1;
-    }
-    return minstack->stack[minstack->top--];
-}
-int top(struct MinStack* minstack) {
-    if (isEmpty(minstack)) {
-        printf("Underflow: stack is empty, no top element\n");
-        return -1;
-    }
-    return minstack->stack[minstack->top];
-}
-int getMin(struct MinStack* minstack) {
-    if (isEmpty(minstack)) {
-        printf("Underflow: stack is empty, no minimum element\n");
-        return -1;
-    }
-    return minstack->min_stack[minstack->top];
-}
-void display(struct MinStack* minstack) {
-    if (isEmpty(minstack)) {
-        printf("Stack is empty\n");
-        return;
-    }
 
-    printf("Stack elements: ");
-    for (int i = 0; i <= minstack->top; i++) {
-        printf("%d ", minstack->stack[i]);
-    }
-    printf("\nMinimum element so far: %d\n", getMin(minstack));
-}
 int main() {
-    struct MinStack minstack;
-    initstack(&minstack);
-    push(&minstack, 10);
-    push(&minstack, 20);
-    push(&minstack, 5);
-    push(&minstack, 30);
-    display(&minstack);
-    printf("Popped: %d\n", pop(&minstack));
-    display(&minstack);
-    printf("Top element: %d\n", top(&minstack));
-
-    printf("Minimum element: %d\n", getMin(&minstack));
-    pop(&minstack);
-    pop(&minstack);
-    pop(&minstack);
-    pop(&minstack);  
+    MinStack minstack;
+    minstack.push(10);
+    minstack.push(20);
+    minstack.push(5);
+    minstack.push(30);
+    minstack.display();
+    std::cout << "Popped: " << minstack.pop() << std::endl;
+    minstack.display();
+    std::cout << "Top element: " << minstack.top() << std::endl;
+    std::cout << "Minimum element: " << minstack.getMin() << std::endl;
+    minstack.pop();
+    minstack.pop();
+    minstack.pop();
+    minstack.pop();
 
     return 0;
 }
+
+
